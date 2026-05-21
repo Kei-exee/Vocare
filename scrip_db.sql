@@ -1,6 +1,5 @@
--- =========================================
+
 -- LIMPIEZA (opcional para pruebas)
--- =========================================
 DROP TABLE IF EXISTS ruta_tema CASCADE;
 DROP TABLE IF EXISTS rutas_aprendizaje CASCADE;
 DROP TABLE IF EXISTS tema_categoria CASCADE;
@@ -12,18 +11,14 @@ DROP TABLE IF EXISTS preguntas CASCADE;
 DROP TABLE IF EXISTS maestrias CASCADE;
 DROP TABLE IF EXISTS categorias CASCADE;
 
--- =========================================
 -- TABLA: categorias
--- =========================================
 CREATE TABLE categorias (
     id_categoria SERIAL PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
     descripcion TEXT
 );
 
--- =========================================
 -- TABLA: maestrias
--- =========================================
 CREATE TABLE maestrias (
     id_maestria SERIAL PRIMARY KEY,
     nombre VARCHAR(150) NOT NULL,
@@ -32,26 +27,20 @@ CREATE TABLE maestrias (
     modalidad VARCHAR(50)
 );
 
--- =========================================
 -- TABLA: preguntas
--- =========================================
 CREATE TABLE preguntas (
     id_pregunta SERIAL PRIMARY KEY,
     pregunta TEXT NOT NULL
 );
 
--- =========================================
 -- TABLA: respuestas (tipo Likert)
--- =========================================
 CREATE TABLE respuestas (
     id_respuesta SERIAL PRIMARY KEY,
     texto VARCHAR(50),
     valor INT
 );
 
--- =========================================
 -- TABLA: pesos_categoria
--- =========================================
 CREATE TABLE pesos_categoria (
     id SERIAL PRIMARY KEY,
     pregunta_id INT REFERENCES preguntas(id_pregunta),
@@ -59,18 +48,14 @@ CREATE TABLE pesos_categoria (
     peso INT
 );
 
--- =========================================
 -- TABLA: temas
--- =========================================
 CREATE TABLE temas (
     id_tema SERIAL PRIMARY KEY,
     nombre VARCHAR(100),
     descripcion TEXT
 );
 
--- =========================================
 -- TABLA: maestria_tema
--- =========================================
 CREATE TABLE maestria_tema (
     id SERIAL PRIMARY KEY,
     id_maestria INT REFERENCES maestrias(id_maestria),
@@ -78,9 +63,7 @@ CREATE TABLE maestria_tema (
     nivel_importancia INT CHECK (nivel_importancia BETWEEN 1 AND 5)
 );
 
--- =========================================
 -- TABLA: tema_categoria
--- =========================================
 CREATE TABLE tema_categoria (
     id SERIAL PRIMARY KEY,
     id_tema INT REFERENCES temas(id_tema),
@@ -88,18 +71,14 @@ CREATE TABLE tema_categoria (
     peso INT
 );
 
--- =========================================
 -- TABLA: rutas_aprendizaje
--- =========================================
 CREATE TABLE rutas_aprendizaje (
     id_ruta SERIAL PRIMARY KEY,
     nombre VARCHAR(100),
     descripcion TEXT
 );
 
--- =========================================
 -- TABLA: ruta_tema
--- =========================================
 CREATE TABLE ruta_tema (
     id SERIAL PRIMARY KEY,
     id_ruta INT REFERENCES rutas_aprendizaje(id_ruta),
@@ -112,9 +91,7 @@ ADD COLUMN universidad VARCHAR(150);
 ALTER TABLE maestrias
 ADD COLUMN sede VARCHAR(100);
 
--- =========================================
 -- CATEGORIAS
--- =========================================
 INSERT INTO categorias (nombre, descripcion) VALUES
 ('Negocios', 'Administración y gestión empresarial'),
 ('Tecnología', 'Software, infraestructura y transformación digital'),
@@ -131,9 +108,7 @@ INSERT INTO categorias (nombre, descripcion) VALUES
 ('Investigación', 'Investigación científica y análisis'),
 ('Agroindustria', 'Producción y gestión agroindustrial');
 
--- =========================================
 -- MAESTRIAS
--- =========================================
 INSERT INTO maestrias
 (nombre, categoria_id, duracion, modalidad, universidad, sede)
 VALUES
@@ -200,9 +175,7 @@ VALUES
 -- AGROINDUSTRIA
 ('Gestión Agroindustrial', 14, '2 años', 'Presencial', 'Universidad Rural', 'Escuintla');
 
--- =========================================
 -- RESPUESTAS
--- =========================================
 INSERT INTO respuestas (texto, valor) VALUES
 ('Nada', 0),
 ('Poco', 1),
@@ -210,9 +183,7 @@ INSERT INTO respuestas (texto, valor) VALUES
 ('Mucho', 3),
 ('Totalmente', 4);
 
--- =========================================
 -- PREGUNTAS (35)
--- =========================================
 INSERT INTO preguntas (pregunta) VALUES
 ('¿Te gusta liderar equipos?'),
 ('¿Te interesa desarrollar tecnología?'),
@@ -250,9 +221,7 @@ INSERT INTO preguntas (pregunta) VALUES
 ('¿Te interesa la transformación digital?'),
 ('¿Te gusta planificar estrategias empresariales?');
 
--- =========================================
 -- TEMAS
--- =========================================
 INSERT INTO temas (nombre, descripcion) VALUES
 ('Programación', 'Desarrollo de software'),
 ('Bases de Datos', 'SQL y modelado de datos'),
@@ -280,9 +249,7 @@ INSERT INTO temas (nombre, descripcion) VALUES
 ('Estadística', 'Análisis estadístico'),
 ('Recursos Humanos', 'Gestión del talento');
 
--- =========================================
 -- MAESTRIA_TEMA
--- =========================================
 INSERT INTO maestria_tema (id_maestria, id_tema, nivel_importancia) VALUES
 
 -- IA
@@ -338,9 +305,7 @@ INSERT INTO maestria_tema (id_maestria, id_tema, nivel_importancia) VALUES
 -- Agroindustria
 (33, 22, 5);
 
--- =========================================
 -- TEMA_CATEGORIA
--- =========================================
 INSERT INTO tema_categoria (id_tema, id_categoria, peso) VALUES
 
 (1, 2, 5),
@@ -384,9 +349,7 @@ INSERT INTO tema_categoria (id_tema, id_categoria, peso) VALUES
 
 (25, 10, 5);
 
--- =========================================
 -- RUTAS_APRENDIZAJE
--- =========================================
 INSERT INTO rutas_aprendizaje (nombre, descripcion) VALUES
 ('Ruta IA', 'Preparación para inteligencia artificial'),
 ('Ruta Ciencia de Datos', 'Análisis y visualización de datos'),
@@ -399,9 +362,7 @@ INSERT INTO rutas_aprendizaje (nombre, descripcion) VALUES
 ('Ruta Logística', 'Operaciones y supply chain'),
 ('Ruta Agroindustrial', 'Gestión de producción agrícola');
 
--- =========================================
 -- RUTA_TEMA
--- =========================================
 INSERT INTO ruta_tema (id_ruta, id_tema) VALUES
 
 -- IA

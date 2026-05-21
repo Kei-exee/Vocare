@@ -778,7 +778,6 @@
       );
 
       /* ══ LOGIN ══ */
-      /* ══ LOGIN REAL ══ */
       $("loginForm").addEventListener("submit", async function (e) {
         e.preventDefault();
 
@@ -807,11 +806,18 @@
             return;
           }
 
-          localStorage.setItem("usuario", JSON.stringify(data.usuario));
+          localStorage.setItem(
+            "vocare_session",
+            JSON.stringify({
+              correo: email,
+            }),
+          );
 
           alert("Login exitoso");
 
           window.location.href = "/";
+
+          
         } catch (error) {
           console.error(error);
 
@@ -894,8 +900,11 @@
         $("rememberMe").checked = true;
       }
 
-      if (localStorage.getItem("vocare_session")) {
-        window.location.href = "index.html";
+      if (
+        localStorage.getItem("vocare_session") &&
+        window.location.pathname === "/login"
+      ) {
+        window.location.href = "/";
       }
     </script>
   </body>
