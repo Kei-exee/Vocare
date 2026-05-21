@@ -2,81 +2,143 @@ from fastapi import APIRouter
 from sqlalchemy import text
 
 from app.db import engine
-from app.schemas.test_schema import ResolverTestRequest
+from app.schemas.test_schema import TestRequest
+from app.services.ia_service import obtener_recomendaciones
 
-router = APIRouter(tags=["Test"])
+router = APIRouter()
 
 
-@router.post("/resolver-test")
-def resolver_test(data: ResolverTestRequest):
+@router.post("/guardar-test")
+def guardar_test(data: TestRequest):
 
     with engine.begin() as conn:
 
+        # CREAR RESULTADO TEST
         resultado = conn.execute(text("""
-            INSERT INTO resultado_test (id_usuario)
-            VALUES (:id_usuario)
+
+            INSERT INTO resultado_test
+            (id_usuario)
+
+            VALUES
+            (:id_usuario)
+
             RETURNING id_resultado
+
         """), {
             "id_usuario": data.id_usuario
         })
 
         id_resultado = resultado.fetchone()[0]
 
-        for item in data.respuestas:
+        # GUARDAR RESPUESTAS
+        respuestas_modelo = []
+
+        for r in data.respuestas:
 
             conn.execute(text("""
+
                 INSERT INTO respuesta_usuario
                 (
                     id_resultado,
                     id_pregunta,
                     id_respuesta
                 )
+
                 VALUES
                 (
                     :id_resultado,
                     :id_pregunta,
                     :id_respuesta
                 )
+
             """), {
+
                 "id_resultado": id_resultado,
-                "id_pregunta": item.pregunta_id,
-                "id_respuesta": item.respuesta_id
+                "id_pregunta": r.id_pregunta,
+                "id_respuesta": r.id_respuesta
+
             })
 
-        categorias = conn.execute(text("""
-            SELECT
-                c.id_categoria,
-                c.nombre,
-                SUM(r.valor * pc.peso) AS puntaje
+            respuestas_modelo.append(
+                r.id_respuesta
+            )
 
-            FROM respuesta_usuario ru
+        # IA
+        top3 = obtener_recomendaciones(
+            respuestas_modelo
+        )
 
-            JOIN respuestas r
-                ON r.id_respuesta = ru.id_respuesta
+        recomendaciones_finales = []
 
-            JOIN pesos_categoria pc
-                ON pc.pregunta_id = ru.id_pregunta
+        posicion = 1
 
-            JOIN categorias c
-                ON c.id_categoria = pc.categoria_id
+        for item in top3:
 
-            WHERE ru.id_resultado = :id_resultado
+            # BUSCAR MAESTRIA POR NOMBRE
+            maestria = conn.execute(text("""
 
-            GROUP BY
-                c.id_categoria,
-                c.nombre
+                SELECT
+                    id_maestria,
+                    nombre,
+                    universidad,
+                    modalidad,
+                    sede
 
-            ORDER BY puntaje DESC
-        """), {
-            "id_resultado": id_resultado
-        }).fetchall()
+                FROM maestrias
 
-        categorias_json = [
-            dict(x._mapping)
-            for x in categorias
-        ]
+                WHERE nombre = :nombre
+
+            """), {
+
+                "nombre": item["maestria"]
+
+            }).fetchone()
+
+            # GUARDAR RECOMENDACION
+            conn.execute(text("""
+
+                INSERT INTO recomendacion
+                (
+                    id_resultado,
+                    id_maestria,
+                    posicion,
+                    puntaje
+                )
+
+                VALUES
+                (
+                    :id_resultado,
+                    :id_maestria,
+                    :posicion,
+                    :puntaje
+                )
+
+            """), {
+
+                "id_resultado": id_resultado,
+                "id_maestria": maestria.id_maestria,
+                "posicion": posicion,
+                "puntaje": item["probabilidad"]
+
+            })
+
+            recomendaciones_finales.append({
+
+                "posicion": posicion,
+                "nombre": maestria.nombre,
+                "universidad": maestria.universidad,
+                "modalidad": maestria.modalidad,
+                "sede": maestria.sede,
+                "probabilidad": item["probabilidad"]
+
+            })
+
+            posicion += 1
 
         return {
+
+            "message": "Test guardado correctamente",
             "id_resultado": id_resultado,
-            "categorias": categorias_json
+            "top3": recomendaciones_finales
+
         }

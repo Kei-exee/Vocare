@@ -9,12 +9,9 @@ from app.routes.preguntas import router as preguntas_router
 from app.routes.test import router as test_router
 from app.routes.historial import router as historial_router
 
-# APP
-
 app = FastAPI()
 
 # CORS
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -23,8 +20,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# STATIC FILES
-
+# STATIC
 app.mount(
     "/static",
     StaticFiles(directory="app/static"),
@@ -32,13 +28,11 @@ app.mount(
 )
 
 # TEMPLATES
-
 templates = Jinja2Templates(
     directory="app/templates"
 )
 
-# PAGINA PRINCIPAL
-
+# HOME
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
 
@@ -49,7 +43,6 @@ async def home(request: Request):
     )
 
 # LOGIN
-
 @app.get("/login", response_class=HTMLResponse)
 async def login_page(request: Request):
 
@@ -59,12 +52,8 @@ async def login_page(request: Request):
         context={}
     )
 
-# ROUTERS API
-
+# ROUTERS
 app.include_router(auth_router)
-
 app.include_router(preguntas_router)
-
 app.include_router(test_router)
-
 app.include_router(historial_router)
