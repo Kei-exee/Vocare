@@ -1,5 +1,4 @@
-from fastapi import APIRouter
-from fastapi.responses import JSONResponse
+from fastapi import APIRouter, HTTPException
 
 from app.schemas.auth_schema import (
     RegisterRequest,
@@ -11,7 +10,7 @@ from app.services.auth_service import (
     login_user
 )
 
-router = APIRouter(tags=["Auth"])
+router = APIRouter()
 
 
 @router.post("/register")
@@ -25,41 +24,34 @@ def register(data: RegisterRequest):
             data.password
         )
 
-        return JSONResponse(
-            status_code=201,
-            content={
-                "message": "Usuario registrado correctamente"
-            }
-        )
+        return {
+            "message": "Usuario registrado"
+        }
 
     except Exception as e:
 
-        return JSONResponse(
+        raise HTTPException(
             status_code=400,
-            content={
-                "error": str(e)
-            }
+            detail=str(e)
         )
 
 
 @router.post("/login")
 def login(data: LoginRequest):
 
-    user = login_user(
+    usuario = login_user(
         data.correo,
         data.password
     )
 
-    if not user:
+    if not usuario:
 
-        return JSONResponse(
+        raise HTTPException(
             status_code=401,
-            content={
-                "error": "Credenciales incorrectas"
-            }
+            detail="Credenciales incorrectas"
         )
 
     return {
         "message": "Login exitoso",
-        "usuario": user
+        "usuario": usuario
     }

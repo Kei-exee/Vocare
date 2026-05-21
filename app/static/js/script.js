@@ -496,37 +496,258 @@ function activate(form, mode) {
 /* ===========================================================
    LOGIN
    =========================================================== */
-try {
-  signIn?.addEventListener('submit', e => {
-    e.preventDefault();
-    const email = signIn.email?.value.trim();
-    const pass  = signIn.password?.value.trim();
+$('loginForm').addEventListener('submit', async function(e){
 
-    if (!email || !pass) {
-      if (loginError) loginError.textContent = 'Completá email y contraseña.';
-      return;
+    e.preventDefault();
+
+    hideBanner('loginBanner');
+
+    const email = $('lEmail').value.trim();
+    const password = $('lPassword').value;
+
+    let ok = true;
+
+    if(!email){
+        setField(
+            'lEmail',
+            'lEmailMsg',
+            'err',
+            'El correo es obligatorio'
+        );
+        ok = false;
     }
 
-    if (loginError) loginError.textContent = '';
-    window.location.href = 'home.html';
-  });
-} catch (err) {
-  console.warn("⚠️ Error en login:", err.message);
-}
+    else if(!isEmail(email)){
+        setField(
+            'lEmail',
+            'lEmailMsg',
+            'err',
+            'Formato inválido'
+        );
+        ok = false;
+    }
+
+    if(!password){
+        setField(
+            'lPassword',
+            'lPasswordMsg',
+            'err',
+            'La contraseña es obligatoria'
+        );
+        ok = false;
+    }
+
+    if(!ok) return;
+    
+    const btn = $('loginBtn');
+    setLoading(btn, true);
+    
+    const hashedPassword = await sha256(password);
+
+    try{
+        const response = await fetch(
+            'http://127.0.0.1:8000/login',
+            {
+
+                method: 'POST',
+                headers:{
+                    'Content-Type':'application/json'
+                },
+                body: JSON.stringify({
+                    correo: email,
+                    password: hashedPassword
+                })
+            }
+        );
+
+        const data = await response.json();
+        if(!response.ok){
+
+            setLoading(btn,false,'Ingresar');
+            showBanner(
+                'loginBanner',
+                'error',
+                data.detail || 'Credenciales incorrectas'
+            );
+            return;
+        }
+
+        localStorage.setItem(
+            'usuario',
+            JSON.stringify(data.usuario)
+        );
+
+        btn.style.background = '#16a34a';
+        btn.innerHTML =
+            'Acceso exitoso';
+
+        showBanner(
+            'loginBanner',
+            'success',
+            `Bienvenido ${data.usuario.nombre}`
+        );
+
+        setTimeout(()=>{
+            window.location.href='index.html';
+        },1500);
+
+    }catch(error){
+
+        console.error(error);
+
+        setLoading(btn,false,'Ingresar');
+
+        showBanner(
+            'loginBanner',
+            'error',
+            'Error conectando con el servidor'
+        );
+    }
+});
 
 
 /* ===========================================================
    REGISTRO
    =========================================================== */
-try {
-  signUp?.addEventListener('submit', e => {
-    if (!signUp.checkValidity()) return;
+$('registerForm').addEventListener('submit', async function(e){
+
     e.preventDefault();
-    alert('Registro enviado (demo)');
-  });
-} catch (err) {
-  console.warn("⚠️ Error en registro:", err.message);
-}
+
+    hideBanner('registerBanner');
+
+    const email = $('rEmail').value.trim();
+
+    const password = $('rPassword').value;
+
+    const confirm = $('rConfirm').value;
+
+    let ok = true;
+
+    if(!email){
+
+        setField(
+            'rEmail',
+            'rEmailMsg',
+            'err',
+            'El correo es obligatorio'
+        );
+
+        ok = false;
+    }
+
+    else if(!isEmail(email)){
+
+        setField(
+            'rEmail',
+            'rEmailMsg',
+            'err',
+            'Formato inválido'
+        );
+
+        ok = false;
+    }
+
+    if(password.length < 8){
+
+        setField(
+            'rPassword',
+            'rPasswordMsg',
+            'err',
+            'Mínimo 8 caracteres'
+        );
+
+        ok = false;
+    }
+
+    if(confirm !== password){
+
+        setField(
+            'rConfirm',
+            'rConfirmMsg',
+            'err',
+            'Las contraseñas no coinciden'
+        );
+
+        ok = false;
+    }
+
+    if(!ok) return;
+
+    const btn = $('registerBtn');
+    setLoading(btn, true);
+
+    const hashedPassword = await sha256(password);
+    console.log(hashedPassword);
+    try{
+
+        const response = await fetch(
+            'http://127.0.0.1:8000/register',
+            {
+                method:'POST',
+                headers:{
+                    'Content-Type':'application/json'
+                },
+
+                body: JSON.stringify({
+                    nombre: email.split('@')[0],
+                    correo: email,
+                    password: hashedPassword
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        if(!response.ok){
+
+            setLoading(
+                btn,
+                false,
+                'Crear Cuenta'
+            );
+
+            showBanner(
+                'registerBanner',
+                'error',
+                data.detail || 'Error'
+            );
+
+            return;
+        }
+
+        btn.style.background='#16a34a';
+
+        btn.innerHTML='✓ Cuenta creada';
+
+        showBanner(
+            'registerBanner',
+            'success',
+            'Usuario registrado correctamente'
+        );
+
+        setTimeout(()=>{
+
+            switchTab('login');
+
+        },1500);
+
+    }catch(error){
+
+        console.error(error);
+
+        setLoading(
+            btn,
+            false,
+            'Crear Cuenta'
+        );
+
+        showBanner(
+            'registerBanner',
+            'error',
+            'Error conectando con servidor'
+        );
+    }
+});
 
 
 /* ===========================================================

@@ -1,18 +1,31 @@
 from sqlalchemy import text
-
 from app.db import engine
-from app.models.security import (
-    hash_password,
-    verify_password
-)
+
 
 def register_user(nombre, correo, password):
 
-    password_hash = hash_password(password)
-
     with engine.begin() as conn:
 
+        existe = conn.execute(text("""
+
+            SELECT *
+            FROM usuarios
+            WHERE correo = :correo
+
+        """), {
+
+            "correo": correo
+
+        }).fetchone()
+
+        if existe:
+
+            raise Exception(
+                "Correo ya registrado"
+            )
+
         conn.execute(text("""
+
             INSERT INTO usuarios
             (
                 nombre,
@@ -23,12 +36,14 @@ def register_user(nombre, correo, password):
             (
                 :nombre,
                 :correo,
-                :password_hash
+                :password
             )
+
         """), {
+
             "nombre": nombre,
             "correo": correo,
-            "password_hash": password_hash
+            "password": password
         })
 
 
@@ -36,18 +51,24 @@ def login_user(correo, password):
 
     with engine.begin() as conn:
 
-        user = conn.execute(text("""
-            SELECT *
+        usuario = conn.execute(text("""
+
+            SELECT
+                id_usuario,
+                nombre,
+                correo
             FROM usuarios
             WHERE correo = :correo
+            AND password_hash = :password
+
         """), {
-            "correo": correo
+
+            "correo": correo,
+            "password": password
+
         }).fetchone()
 
-        if not user:
+        if not usuario:
             return None
 
-        if not verify_password(password, user.password_hash):
-            return None
-
-        return dict(user._mapping)
+        return dict(usuario._mapping)
