@@ -2,6 +2,8 @@ import random
 import pandas as pd
 
 TOTAL_REGISTROS = 5000
+TOTAL_PREGUNTAS = 35
+
 registros = []
 
 for _ in range(TOTAL_REGISTROS):
@@ -19,198 +21,125 @@ for _ in range(TOTAL_REGISTROS):
         "gestion"
     ])
 
-    # GENERAR PERFILES MÁS COHERENTES
-    if perfil == "ia":
+    respuestas = []
 
-        ia = random.randint(85,100)
-        programacion = random.randint(80,100)
-        matematicas = random.randint(75,100)
-        analisis_datos = random.randint(80,100)
+    for i in range(TOTAL_PREGUNTAS):
 
-        gestion = random.randint(20,60)
-        investigacion = random.randint(50,80)
-        redes = random.randint(20,60)
-        seguridad = random.randint(30,70)
-        comunicacion = random.randint(30,70)
-        liderazgo = random.randint(30,70)
+        if perfil == "ia":
 
-        maestria = "Inteligencia Artificial"
+            if i in [0,1,2,3,4,5,6]:
+                valor = random.randint(4,5)
+            else:
+                valor = random.randint(2,4)
 
-    elif perfil == "datos":
+            maestria = "Inteligencia Artificial"
 
-        ia = random.randint(60,90)
-        programacion = random.randint(70,95)
-        matematicas = random.randint(80,100)
-        analisis_datos = random.randint(85,100)
+        elif perfil == "datos":
 
-        gestion = random.randint(30,70)
-        investigacion = random.randint(50,80)
-        redes = random.randint(20,50)
-        seguridad = random.randint(20,50)
-        comunicacion = random.randint(30,70)
-        liderazgo = random.randint(30,60)
+            if i in [7,8,9,10,11,12,13]:
+                valor = random.randint(4,5)
+            else:
+                valor = random.randint(2,4)
 
-        maestria = "Data Science"
+            maestria = "Ciencia de Datos"
 
-    elif perfil == "seguridad":
+        elif perfil == "seguridad":
 
-        seguridad = random.randint(85,100)
-        redes = random.randint(75,100)
+            if i in [14,15,16,17,18]:
+                valor = random.randint(4,5)
+            else:
+                valor = random.randint(2,4)
 
-        ia = random.randint(30,70)
-        programacion = random.randint(50,85)
-        matematicas = random.randint(40,80)
-        analisis_datos = random.randint(40,70)
-        gestion = random.randint(30,60)
-        investigacion = random.randint(30,60)
-        comunicacion = random.randint(30,60)
-        liderazgo = random.randint(30,60)
+            maestria = "Ciberseguridad"
 
-        maestria = "Ciberseguridad"
+        elif perfil == "software":
 
-    elif perfil == "software":
+            if i in [19,20,21]:
+                valor = random.randint(4,5)
+            else:
+                valor = random.randint(2,4)
 
-        programacion = random.randint(85,100)
+            maestria = "Sistemas de Información"
 
-        ia = random.randint(50,80)
-        matematicas = random.randint(60,90)
-        analisis_datos = random.randint(50,80)
-        seguridad = random.randint(30,70)
-        redes = random.randint(30,70)
-        gestion = random.randint(30,60)
-        investigacion = random.randint(30,70)
-        comunicacion = random.randint(40,70)
-        liderazgo = random.randint(40,70)
+        elif perfil == "redes":
 
-        maestria = "Desarrollo Software"
+            if i in [22,23,24]:
+                valor = random.randint(4,5)
+            else:
+                valor = random.randint(2,4)
 
-    elif perfil == "redes":
+            maestria = "Transformación Digital"
 
-        redes = random.randint(85,100)
+        elif perfil == "negocios":
 
-        seguridad = random.randint(60,90)
-        programacion = random.randint(40,80)
-        ia = random.randint(20,60)
-        matematicas = random.randint(40,80)
-        analisis_datos = random.randint(30,70)
-        gestion = random.randint(30,60)
-        investigacion = random.randint(30,60)
-        comunicacion = random.randint(30,70)
-        liderazgo = random.randint(30,70)
+            if i in [25,26,27]:
+                valor = random.randint(4,5)
+            else:
+                valor = random.randint(2,4)
 
-        maestria = "Redes y Telecomunicaciones"
+            maestria = "MBA Ejecutivo"
 
-    elif perfil == "negocios":
+        elif perfil == "marketing":
 
-        gestion = random.randint(85,100)
-        liderazgo = random.randint(85,100)
-        comunicacion = random.randint(75,100)
+            if i in [28,29]:
+                valor = random.randint(4,5)
+            else:
+                valor = random.randint(2,4)
 
-        ia = random.randint(10,50)
-        programacion = random.randint(10,50)
-        matematicas = random.randint(40,80)
-        analisis_datos = random.randint(40,80)
-        seguridad = random.randint(10,40)
-        redes = random.randint(10,40)
-        investigacion = random.randint(30,60)
+            maestria = "Marketing Digital"
 
-        maestria = "MBA"
+        elif perfil == "finanzas":
 
-    elif perfil == "marketing":
+            if i in [30,31]:
+                valor = random.randint(4,5)
+            else:
+                valor = random.randint(2,4)
 
-        comunicacion = random.randint(85,100)
-        liderazgo = random.randint(70,90)
-        gestion = random.randint(70,90)
+            maestria = "Finanzas Corporativas"
 
-        analisis_datos = random.randint(50,80)
-        ia = random.randint(20,60)
-        programacion = random.randint(20,60)
-        matematicas = random.randint(30,70)
-        seguridad = random.randint(10,40)
-        redes = random.randint(10,40)
-        investigacion = random.randint(30,70)
+        elif perfil == "investigacion":
 
-        maestria = "Marketing Digital"
+            if i in [32,33]:
+                valor = random.randint(4,5)
+            else:
+                valor = random.randint(2,4)
 
-    elif perfil == "finanzas":
+            maestria = "Investigación Científica"
 
-        matematicas = random.randint(85,100)
-        analisis_datos = random.randint(75,95)
-        gestion = random.randint(60,90)
+        else:
 
-        ia = random.randint(20,60)
-        programacion = random.randint(20,60)
-        seguridad = random.randint(10,40)
-        redes = random.randint(10,40)
-        investigacion = random.randint(40,70)
-        comunicacion = random.randint(50,80)
-        liderazgo = random.randint(50,80)
+            if i in [34]:
+                valor = random.randint(4,5)
+            else:
+                valor = random.randint(2,4)
 
-        maestria = "Finanzas"
+            maestria = "Gerencia de Proyectos"
 
-    elif perfil == "investigacion":
+        respuestas.append(valor)
 
-        investigacion = random.randint(90,100)
-        matematicas = random.randint(70,95)
+    respuestas.append(maestria)
 
-        ia = random.randint(40,80)
-        programacion = random.randint(40,80)
-        analisis_datos = random.randint(60,90)
-        gestion = random.randint(40,70)
-        seguridad = random.randint(20,50)
-        redes = random.randint(20,50)
-        comunicacion = random.randint(50,80)
-        liderazgo = random.randint(40,70)
+    registros.append(respuestas)
 
-        maestria = "Investigacion Tecnologica"
+# COLUMNAS
+columnas = []
 
-    else:
+for i in range(1, TOTAL_PREGUNTAS + 1):
+    columnas.append(f"pregunta_{i}")
 
-        gestion = random.randint(80,100)
-        liderazgo = random.randint(75,95)
+columnas.append("maestria")
 
-        ia = random.randint(20,60)
-        programacion = random.randint(30,70)
-        matematicas = random.randint(40,80)
-        analisis_datos = random.randint(50,80)
-        seguridad = random.randint(20,50)
-        redes = random.randint(20,50)
-        investigacion = random.randint(40,70)
-        comunicacion = random.randint(60,90)
+# DATAFRAME
+df = pd.DataFrame(
+    registros,
+    columns=columnas
+)
 
-        maestria = "Gestion de Proyectos"
-
-    registros.append([
-        ia,
-        gestion,
-        investigacion,
-        programacion,
-        matematicas,
-        redes,
-        seguridad,
-        comunicacion,
-        liderazgo,
-        analisis_datos,
-        maestria
-    ])
-
-columnas = [
-    "ia",
-    "gestion",
-    "investigacion",
-    "programacion",
-    "matematicas",
-    "redes",
-    "seguridad",
-    "comunicacion",
-    "liderazgo",
-    "analisis_datos",
-    "maestria"
-]
-
-df = pd.DataFrame(registros, columns=columnas)
-
-df.to_csv("training/dataset.csv", index=False)
+# GUARDAR
+df.to_csv(
+    "dataset.csv",
+    index=False
+)
 
 print("Dataset generado correctamente")
 print(df["maestria"].value_counts())
