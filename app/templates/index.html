@@ -17,7 +17,7 @@
     <link rel="icon" type="image/png" href="/app/static/img/logo.png" />
 
     <script>
-      const sesion = localStorage.getItem("vocare_session");
+      const sesion = localStorage.getItem("usuario");
       if (!sesion) {
         window.location.href = "/login";
       }
@@ -982,7 +982,7 @@
     <script>
       AOS.init();
     </script>
-    <script src="../static/js/script.js"></script>
+    
 
     <!-- ══════════════════════════════════════════════
          SESIÓN / LOGOUT
@@ -1035,4 +1035,5 @@
       }
     </script>
   </body>
+  <script src="../static/js/script.js"></script>
 </html>
