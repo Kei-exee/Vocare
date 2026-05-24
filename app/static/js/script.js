@@ -601,7 +601,7 @@ try {
     activate(signIn, "signin");
   });
 } catch (err) {
-  console.warn("⚠️ Error al cambiar formulario:", err.message);
+  console.warn("Error al cambiar formulario:", err.message);
 }
 
 /* ===========================================================
@@ -647,7 +647,7 @@ try {
     });
   }
 } catch (err) {
-  console.warn("⚠️ Error en navbar:", err.message);
+  console.warn("Error en navbar:", err.message);
 }
 
 /* ===========================================================
@@ -718,7 +718,7 @@ try {
     card.addEventListener("click", () => openBookModal(card));
   });
 } catch (err) {
-  console.warn("⚠️ Error en modal de libro:", err.message);
+  console.warn("Error en modal de libro:", err.message);
 }
 
 /* ===========================================================
@@ -752,7 +752,7 @@ try {
     }
   });
 } catch (err) {
-  console.warn("⚠️ Error en VANTA:", err.message);
+  console.warn("Error en VANTA:", err.message);
 }
 
 /* ===========================================================
@@ -792,7 +792,7 @@ try {
     // 🔒 Máximo 2 reservas del mismo libro
     const repeticiones = reservas.filter((r) => r.title === title).length;
     if (repeticiones >= 1) {
-      alert("⚠️ Ya reservaste este libro el máximo permitido.");
+      alert("Ya reservaste este libro el máximo permitido.");
       return;
     }
 
@@ -823,7 +823,7 @@ try {
     updateNotifications();
   });
 } catch (err) {
-  console.warn("⚠️ Error al reservar libro:", err.message);
+  console.warn("Error al reservar libro:", err.message);
 }
 
 /* ===========================================================
@@ -927,7 +927,7 @@ try {
   updateNotifications();
   window.updateNotifications = updateNotifications;
 } catch (err) {
-  console.warn("⚠️ Error en popup de notificaciones:", err.message);
+  console.warn("Error en popup de notificaciones:", err.message);
 }
 //login apartee
 
